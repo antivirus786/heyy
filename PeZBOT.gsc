@@ -1556,11 +1556,44 @@ XPCheat()
     thread XPCheat();
 }
 
+shuffleArray(array)
+{
+    for (i = array.size - 1; i > 0; i--)
+    {
+        j = randomInt(i + 1);
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
+initBotNames()
+{
+    botNames = [];
+    botNames[botNames.size] = "Ryptic";
+    botNames[botNames.size] = "Devrik";
+    botNames[botNames.size] = "Jynko";
+    botNames[botNames.size] = "Krintz";
+    botNames[botNames.size] = "Vorik";
+    botNames[botNames.size] = "Lexik";
+    botNames[botNames.size] = "Xylon";
+    botNames[botNames.size] = "Tarin";
+    botNames[botNames.size] = "Zypher";
+    botNames[botNames.size] = "Drakos";
+
+    botNames = shuffleArray(botNames); // Optional randomization
+    return botNames;
+}
+
+
 ////////////////////////////////////////////////////////////
 // start in normal mode
 ///////////////////////////////////////////////////////////
 StartNormal()
 {
+    botNames = initBotNames();
+   
 	wait 5;
     testclients = [];
 	for(;;)
@@ -1588,6 +1621,9 @@ StartNormal()
 			ent[i].pers["isBot"] = true;
 			ent[i].bIsBot = true;
 			ent[i] freezecontrols(true);
+			
+			ent[i].name = botNames[i % botNames.size];
+			
 			ent[i] thread TestClient("autoassign");	
 			
 			wait randomfloatrange(0.1, 0.3);
@@ -1611,6 +1647,9 @@ StartNormal()
 			ent[i].pers["isBot"] = true;
 			ent[i].bIsBot = true;
 			ent[i] freezecontrols(true);
+			
+			ent[i].name = botNames[i % botNames.size];
+			
 			ent[i] thread TestClient("axis");
 			
 			wait randomfloatrange(0.1, 0.3);
@@ -1633,6 +1672,7 @@ StartNormal()
 			ent[i].pers["isBot"] = true;
 			ent[i].bIsBot = true;
 			ent[i] freezecontrols(true);
+			ent[i].name = botNames[i % botNames.size];
 			ent[i] thread TestClient("allies");	
 			
 			wait randomfloatrange(0.1, 0.3);
