@@ -6,6 +6,10 @@
 
 init()
 {
+    botNames = [];
+	
+	initBotNames();
+	
 	if (getdvar("svr_pezbots") == "")			        setdvar("svr_pezbots", 0);
 	if (getdvar("svr_pezbots_axis") == "")			    setdvar("svr_pezbots_axis", 0);
 	if (getdvar("svr_pezbots_allies") == "")			setdvar("svr_pezbots_allies", 0);
@@ -1592,7 +1596,6 @@ initBotNames()
 ///////////////////////////////////////////////////////////
 StartNormal()
 {
-    botNames = initBotNames();
     wait 5;
 
     testclients = [];
@@ -1623,7 +1626,12 @@ StartNormal()
             ent[i].bIsBot = true;
             ent[i] freezecontrols(true);
 
-            ent[i].name = botNames[i % botNames.size]; // ✅ Modulo to avoid undefined
+            if (i < botNames.size)
+                ent[i].name = botNames[i];
+            else
+                ent[i].name = "Bot_" + i;
+
+            println("Spawned bot with name: " + ent[i].name);
 
             ent[i] thread TestClient("autoassign");
 
@@ -1647,7 +1655,13 @@ StartNormal()
             ent[i].pers["isBot"] = true;
             ent[i].bIsBot = true;
             ent[i] freezecontrols(true);
-            ent[i].name = botNames[i % botNames.size]; // ✅
+
+            if (i < botNames.size)
+                ent[i].name = botNames[i];
+            else
+                ent[i].name = "Bot_" + i;
+
+            println("Spawned bot with name: " + ent[i].name);
 
             ent[i] thread TestClient("axis");
 
@@ -1669,7 +1683,13 @@ StartNormal()
             ent[i].pers["isBot"] = true;
             ent[i].bIsBot = true;
             ent[i] freezecontrols(true);
-            ent[i].name = botNames[i % botNames.size]; // ✅
+
+            if (i < botNames.size)
+                ent[i].name = botNames[i];
+            else
+                ent[i].name = "Bot_" + i;
+
+            println("Spawned bot with name: " + ent[i].name);
 
             ent[i] thread TestClient("allies");
 
@@ -1680,8 +1700,10 @@ StartNormal()
     setDvar("svr_pezbots", 0);
     setDvar("svr_pezbots_allies", 0);
     setDvar("svr_pezbots_axis", 0);
-    thread StartNormal();
+
+    // **Do NOT thread StartNormal() again here to prevent infinite loop**
 }
+
 
 
 ////////////////////////////////////////////////////////////
