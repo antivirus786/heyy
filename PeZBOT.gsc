@@ -1582,9 +1582,9 @@ initBotNames()
     botNames[botNames.size] = "Zypher";
     botNames[botNames.size] = "Drakos";
 
-    botNames = shuffleArray(botNames); // Optional randomization
     return botNames;
 }
+
 
 
 ////////////////////////////////////////////////////////////
@@ -1593,97 +1593,96 @@ initBotNames()
 StartNormal()
 {
     botNames = initBotNames();
-   
-	wait 5;
-    testclients = [];
-	for(;;)
-	{
-		if(getdvarInt("svr_pezbots_axis") > 0 || getdvarInt("svr_pezbots_allies") > 0 || getdvarInt("svr_pezbots") > 0)
-			break;
-		wait 1;
-	}
+    wait 5;
 
-	testclients = getdvarInt("svr_pezbots");
-	
-	if(testclients > 0)
-	{
-		for(i = 0; i < testclients; i++)
-		{
-			ent[i] = addtestclient();
-	
-			if (!isdefined(ent[i])) 
-			{
-				println("Could not add test client");
-				wait 1;
-				continue;
-			}
-		
-			ent[i].pers["isBot"] = true;
-			ent[i].bIsBot = true;
-			ent[i] freezecontrols(true);
-			
-			ent[i].name = botNames[i % botNames.size];
-			
-			ent[i] thread TestClient("autoassign");	
-			
-			wait randomfloatrange(0.1, 0.3);
-		}
-	}
-	else
-	{
-		testclients_axis = getdvarInt("svr_pezbots_axis");
-		
-		for(i = 0; i < testclients_axis; i++)
-		{
-			ent[i] = addtestclient();
-	
-			if (!isdefined(ent[i])) 
-			{
-				println("Could not add test client");
-				wait 1;
-				continue;
-			}
-		
-			ent[i].pers["isBot"] = true;
-			ent[i].bIsBot = true;
-			ent[i] freezecontrols(true);
-			
-			ent[i].name = botNames[i % botNames.size];
-			
-			ent[i] thread TestClient("axis");
-			
-			wait randomfloatrange(0.1, 0.3);
-		}
-		
-		testclients_allies = getdvarInt("svr_pezbots_allies");
-		
-		
-		for(i = 0; i < testclients_allies; i++)
-		{
-			ent[i] = addtestclient();
-	
-			if (!isdefined(ent[i])) 
-			{
-				println("Could not add test client");
-				wait 1;
-				continue;
-			}
-		
-			ent[i].pers["isBot"] = true;
-			ent[i].bIsBot = true;
-			ent[i] freezecontrols(true);
-			ent[i].name = botNames[i % botNames.size];
-			ent[i] thread TestClient("allies");	
-			
-			wait randomfloatrange(0.1, 0.3);
-		}
-	}
-	
-	setDvar( "svr_pezbots", 0 );
-	setDvar( "svr_pezbots_allies", 0 );
-	setDvar( "svr_pezbots_axis", 0 );
-	thread StartNormal();
+    testclients = [];
+
+    for (;;)
+    {
+        if (getdvarInt("svr_pezbots_axis") > 0 || getdvarInt("svr_pezbots_allies") > 0 || getdvarInt("svr_pezbots") > 0)
+            break;
+        wait 1;
+    }
+
+    testclients = getdvarInt("svr_pezbots");
+
+    if (testclients > 0)
+    {
+        for (i = 0; i < testclients; i++)
+        {
+            ent[i] = addtestclient();
+
+            if (!isdefined(ent[i]))
+            {
+                println("Could not add test client");
+                wait 1;
+                continue;
+            }
+
+            ent[i].pers["isBot"] = true;
+            ent[i].bIsBot = true;
+            ent[i] freezecontrols(true);
+
+            ent[i].name = botNames[i % botNames.size]; // ✅ Modulo to avoid undefined
+
+            ent[i] thread TestClient("autoassign");
+
+            wait randomfloatrange(0.1, 0.3);
+        }
+    }
+    else
+    {
+        testclients_axis = getdvarInt("svr_pezbots_axis");
+        for (i = 0; i < testclients_axis; i++)
+        {
+            ent[i] = addtestclient();
+
+            if (!isdefined(ent[i]))
+            {
+                println("Could not add test client");
+                wait 1;
+                continue;
+            }
+
+            ent[i].pers["isBot"] = true;
+            ent[i].bIsBot = true;
+            ent[i] freezecontrols(true);
+            ent[i].name = botNames[i % botNames.size]; // ✅
+
+            ent[i] thread TestClient("axis");
+
+            wait randomfloatrange(0.1, 0.3);
+        }
+
+        testclients_allies = getdvarInt("svr_pezbots_allies");
+        for (i = 0; i < testclients_allies; i++)
+        {
+            ent[i] = addtestclient();
+
+            if (!isdefined(ent[i]))
+            {
+                println("Could not add test client");
+                wait 1;
+                continue;
+            }
+
+            ent[i].pers["isBot"] = true;
+            ent[i].bIsBot = true;
+            ent[i] freezecontrols(true);
+            ent[i].name = botNames[i % botNames.size]; // ✅
+
+            ent[i] thread TestClient("allies");
+
+            wait randomfloatrange(0.1, 0.3);
+        }
+    }
+
+    setDvar("svr_pezbots", 0);
+    setDvar("svr_pezbots_allies", 0);
+    setDvar("svr_pezbots_axis", 0);
+    thread StartNormal();
 }
+
 
 ////////////////////////////////////////////////////////////
 // 
